@@ -5,7 +5,7 @@ fun main() {
 
         var topClear = true
         if (line != 0) {
-            for (i in start - 1.coerceAtLeast(0)..end + 1.coerceAtMost(lastIndex)) {
+            for (i in (start - 1).coerceAtLeast(0)..(end + 1).coerceAtMost(lastIndex)) {
                 with(this[line - 1][i]) {
                     if (this != '.' && !this.isDigit()) {
                         topClear = false
@@ -16,7 +16,7 @@ fun main() {
         }
         var bottomClear = true
         if (line != this.lastIndex) {
-            for (i in start - 1.coerceAtLeast(0)..end + 1.coerceAtMost(lastIndex)) {
+            for (i in (start - 1).coerceAtLeast(0)..(end + 1).coerceAtMost(lastIndex)) {
                 with(this[line + 1][i]) {
                     if (this != '.' && !this.isDigit()) {
                         bottomClear = false
@@ -31,9 +31,12 @@ fun main() {
     }
 
     fun part1(input: List<String>): Int {
-        return input.map {
-            it.first { it.isDigit() }.digitToInt() * 10 +
-            it.last { it.isDigit() }.digitToInt()
+        val regex = """\d+""".toRegex()
+        return input.mapIndexed { line, s ->
+
+            regex.findAll(s)
+                .sumOf { if (input.isFree(line, it.range.first, it.range.last)) 0 else it.value.toInt() }
+
         }.sumOf { it }
     }
 
@@ -47,13 +50,13 @@ fun main() {
     }
 
     // test if implementation meets criteria from the description, like:
-    val testInput = readInput("Day01_test")
-    check(part1(testInput) == 142)
+    val testInput = readInput("Day03_test")
+    check(part1(testInput) == 4361)
 
     val testInput2 = readInput("Day01_test2")
     check(part2(testInput2) == 281)
 
-    val input = readInput("Day01")
+    val input = readInput("Day03")
     part1(input).println()
     part2(input).println()
 }
